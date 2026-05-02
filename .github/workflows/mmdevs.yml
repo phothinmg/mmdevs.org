@@ -1,20 +1,17 @@
-name: Welcome
+name: Mmdevs
 
 on:
   pull_request:
     branches:
       - main
-    types:
-      - opened
 
 jobs:
   welcome_message:
-    name: Welcome Message
+    if: github.event.action == 'opened'
+
     runs-on: ubuntu-latest
 
     permissions:
-      actions: read
-      checks: read
       pull-requests: write
 
     steps:
@@ -27,7 +24,7 @@ jobs:
             const repo = context.repo.repo;
             const issue_number = context.payload.pull_request.number;
 
-            const comment_body = `\nWelcome from mmdevs! Thank you for creating a PR.\nThe validation process is running now, please wait until it passes.`;
+            const comment_body = `\n🙏🙏🙏 Welcome from mmdevs! Thank you for creating a PR.\n\nThe validation process is running soon, please wait until it passes.`;
 
             await github.rest.issues.createComment({
               owner,
