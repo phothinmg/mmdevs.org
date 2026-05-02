@@ -7,37 +7,31 @@ on:
     types:
       - opened
 
-  permissions: {}
+jobs:
+  welcome_message:
+    name: Welcome Message
+    runs-on: ubuntu-latest
 
-  jobs:
-    welcome_message:
-      if: github.event.workflow_run.event == 'pull_request'
-
-      name: Welcome Message
-      runs-on: ubuntu-latest
-
-      permissions:
+    permissions:
       actions: read
       checks: read
       pull-requests: write
 
-      steps:
-        - name: Run welcome message
-          uses: actions/github-script@v8
-          env:
-            PR_NUMBER: ${{ github.event.pull_request.number }}
-          with:
-            github-token: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
-            script: |
-              const owner = context.repo.owner;
-              const repo = context.repo.repo;
-              const issue_number = `${process.env.PR_NUMBER}`;
+    steps:
+      - name: Run welcome message
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.payload.pull_request.number;
 
-              const comment_body = `\nWelcome from mmdevs thank for creating PR.\nValidating process is running now, please wait until passed.`
+            const comment_body = `\nWelcome from mmdevs! Thank you for creating a PR.\nThe validation process is running now, please wait until it passes.`;
 
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number,
-                body,
-              });
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body: comment_body,
+            });
