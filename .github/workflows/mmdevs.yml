@@ -218,7 +218,7 @@ jobs:
         if: success() && github.event_name == 'pull_request'
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.SUSEE_BOT_PAT }}
+          github-token: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
