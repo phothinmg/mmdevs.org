@@ -1,0 +1,6 @@
+//
+{
+  "$schema": "../schema/mmdevs.json",
+  "sub_domain": "example",
+  "cname_value": "example.github.io"
+}
