@@ -62,3 +62,14 @@ jobs:
         run: |
           node opt/prBody.mjs
         working-directory: mmdevs
+
+      - name: Check PR User Location
+        id: check_pr_user_location
+        env:
+          GITHUB_TOKEN: ${{ secrets.MMDEV_GH_REPO_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          node opt/user.mjs
+        working-directory: mmdevs
