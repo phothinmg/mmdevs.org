@@ -1,5 +1,0 @@
-{
-  "$schema": "../schema/mmdevs.json",
-  "sub_domain": "thingyan",
-  "cname_value": "phothinmaung.github.io"
-}
