@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   validate:
-    name: Validate subdomain register/update/remove
+    name: Validate subdomain
     runs-on: ubuntu-latest
 
     steps:
@@ -55,7 +55,7 @@ jobs:
       - name: Check PR Body
         id: check_pr_body
         env:
-          GITHUB_TOKEN: ${{ secrets.MMDEV_GH_REPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
@@ -66,7 +66,7 @@ jobs:
       - name: Check PR User Location
         id: check_pr_user_location
         env:
-          GITHUB_TOKEN: ${{ secrets.MMDEV_GH_REPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
@@ -88,173 +88,3 @@ jobs:
         with:
           name: pr_number
           path: pr/
-
-      - name: Comment bot on failed steps
-        if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
-        env:
-          CHECK_PR_BODY: ${{ steps.check_pr_body.outcome }}
-          CHECK_PR_USER_LOCATION: ${{ steps.check_pr_user_location.outcome }}
-          JOB_DISPLAY_NAME: "Validate subdomain register/update/remove"
-        with:
-          github-token: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
-          script: |
-            const failedSteps = [];
-            const stepOutcomes = {
-            "Check PR Body": process.env.CHECK_PR_BODY,
-            "Check PR User Location": process.env.CHECK_PR_USER_LOCATION
-            }
-
-             for (const [stepName, outcome] of Object.entries(stepOutcomes)) {
-              if (outcome === "failure") {
-                failedSteps.push(stepName);
-              }
-            }
-
-            if (failedSteps.length === 0) {
-              return;
-            }
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const issue_number = context.payload.pull_request.number;
-            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
-            const marker = `<!-- workflow-error-report:${context.job} -->`;
-            const sanitizeLine = (line) => line.replace(/\x1b\[[0-9;]*m/g, "").trimEnd();
-            const truncateText = (value, max = 3500) =>
-              value.length > max ? `${value.slice(0, max)}\n... (truncated)` : value;
-            let diagnosticsBlock = "No matching error/warn/log lines found in job log.";
-
-            try {
-              const { data: jobsData } = await github.rest.actions.listJobsForWorkflowRun({
-                owner,
-                repo,
-                run_id: context.runId,
-                per_page: 100,
-              });
-
-              const currentJob = jobsData.jobs.find(
-                (job) => job.name === process.env.JOB_DISPLAY_NAME || job.name === context.job
-              );
-
-              if (currentJob) {
-                const logsMeta = await github.request("GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs", {
-                  owner,
-                  repo,
-                  job_id: currentJob.id,
-                });
-
-                const logsUrl = logsMeta.headers?.location;
-                if (logsUrl) {
-                  const logsResponse = await fetch(logsUrl);
-                  const logsText = await logsResponse.text();
-                  const failedStepMatchers = failedSteps.map((step) => step.toLowerCase());
-                  const matchedLines = logsText
-                    .split("\n")
-                    .map(sanitizeLine)
-                    .filter((line) => {
-                      if (!line) return false;
-                      const lowered = line.toLowerCase();
-                      return (
-                        /(^|\W)(error|warn|warning|failed|exception|fatal)(\W|$)/i.test(line) ||
-                        failedStepMatchers.some((stepName) => lowered.includes(stepName))
-                      );
-                    });
-
-                  if (matchedLines.length > 0) {
-                    diagnosticsBlock = truncateText(matchedLines.slice(-40).join("\n"));
-                  }
-                }
-              }
-            } catch (error) {
-              diagnosticsBlock = `Unable to fetch logs: ${error.message}`;
-            }
-
-            const commentBody = [
-              "[bot] workflow error report",
-              marker,
-              `Job: ${context.job}`,
-              `Failed step(s): ${failedSteps.join(", ")}`,
-              `Run: ${runUrl}`,
-              "",
-              "Diagnostics:",
-              "```text",
-              diagnosticsBlock,
-              "```",
-            ].join("\n");
-
-            const { data: comments } = await github.rest.issues.listComments({
-              owner,
-              repo,
-              issue_number,
-              per_page: 100,
-            });
-
-            const existing = [...comments].reverse().find((comment) => {
-              const body = comment.body || "";
-              return (
-                comment.user?.type === "Bot" &&
-                body.includes("[bot] workflow error report") &&
-                (body.includes(marker) || body.includes(`Job: ${context.job}`))
-              );
-            });
-
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: existing.id,
-                body: commentBody,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number,
-                body: commentBody,
-              });
-            }
-
-      - name: Comment bot on resolved status
-        if: success() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
-        with:
-          github-token: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const issue_number = context.payload.pull_request.number;
-            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
-            const marker = `<!-- workflow-error-report:${context.job} -->`;
-
-            const { data: comments } = await github.rest.issues.listComments({
-              owner,
-              repo,
-              issue_number,
-              per_page: 100,
-            });
-
-            const existing = [...comments].reverse().find((comment) => {
-              const body = comment.body || "";
-              return (
-                comment.user?.type === "Bot" &&
-                body.includes("[bot] workflow error report") &&
-                (body.includes(marker) || body.includes(`Job: ${context.job}`))
-              );
-            });
-
-            if (!existing) {
-              return;
-            }
-
-            await github.rest.issues.updateComment({
-              owner,
-              repo,
-              comment_id: existing.id,
-              body: [
-                "[bot] workflow status",
-                marker,
-                `Job: ${context.job}`,
-                "Status: resolved",
-                `Run: ${runUrl}`,
-              ].join("\n"),
-            });
