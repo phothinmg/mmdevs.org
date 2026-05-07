@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      content: write
+      content: read
 
     steps:
       - uses: actions/checkout@v6
@@ -51,12 +51,8 @@ jobs:
         id: build_source
         run: npm run build
         working-directory: mmdevs
-      # build opt file
-      - name: Build Source
-        id: build_opt
-        run: npm run opt
-        working-directory: mmdevs
-      # check pull request body
+
+      # Checking PR Body
       - name: Check PR Body
         id: check_pr_body
         env:
@@ -64,7 +60,9 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_BODY: ${{ github.event.pull_request.body }}
+          KV_API_TOKEN: ${{ secrets.MMDEVS_CF_KV_API_TOKEN }}
+          KV_NS_ID: ${{ secrets.MMDEVS_KV_NS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.PTM_CF_ACC_ID }}
         run: |
           node body.mjs
         working-directory: mmdevs
@@ -76,6 +74,9 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          KV_API_TOKEN: ${{ secrets.MMDEVS_CF_KV_API_TOKEN }}
+          KV_NS_ID: ${{ secrets.MMDEVS_KV_NS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.PTM_CF_ACC_ID }}
         run: |
           node user.mjs
         working-directory: mmdevs
@@ -87,8 +88,9 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_USER: ${{ github.event.pull_request.user.login }}
-          GITHUB_UID: ${{ github.event.pull_request.user.id }}
+          KV_API_TOKEN: ${{ secrets.MMDEVS_CF_KV_API_TOKEN }}
+          KV_NS_ID: ${{ secrets.MMDEVS_KV_NS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.PTM_CF_ACC_ID }}
         run: |
           node entry.mjs
         working-directory: mmdevs
