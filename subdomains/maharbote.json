@@ -1,0 +1,6 @@
+{
+  "$schema": "../schema/mmdevs.json",
+  "sub_domain": "maharbote",
+  "cname_value": "maharbote.github.io",
+  "request_type": "register"
+}
