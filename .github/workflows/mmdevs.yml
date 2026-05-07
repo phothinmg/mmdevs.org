@@ -1,0 +1,110 @@
+name: Mmdevs
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+      - ready_for_review
+
+permissions: {}
+
+jobs:
+  validate:
+    name: Validate subdomain
+    runs-on: ubuntu-latest
+
+    permissions:
+      content: write
+
+    steps:
+      - uses: actions/checkout@v6
+        id: checkout_pr_head
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          token: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
+        # source repository
+      - uses: actions/checkout@v6
+        id: checkout_source_repo
+        with:
+          repository: suseejs/mmdevs
+          path: mmdevs
+
+      - name: Setup Node.js
+        id: setup_node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: mmdevs/package-lock.json
+
+      - name: Install dependencies
+        id: install_dependencies
+        run: npm ci
+        working-directory: mmdevs
+
+      - name: Build Source
+        id: build_source
+        run: npm run build
+        working-directory: mmdevs
+      # build opt file
+      - name: Build Source
+        id: build_opt
+        run: npm run opt
+        working-directory: mmdevs
+      # check pull request body
+      - name: Check PR Body
+        id: check_pr_body
+        env:
+          GITHUB_TOKEN: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          node body.mjs
+        working-directory: mmdevs
+
+      - name: Check PR User Location
+        id: check_pr_user_location
+        env:
+          GITHUB_TOKEN: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          node user.mjs
+        working-directory: mmdevs
+
+      - name: Check Entries
+        id: check_entries
+        env:
+          GITHUB_TOKEN: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_USER: ${{ github.event.pull_request.user.login }}
+          GITHUB_UID: ${{ github.event.pull_request.user.id }}
+        run: |
+          node entry.mjs
+        working-directory: mmdevs
+
+      # save artifact
+      - name: Save PR number artifact
+        id: save_pr_artifact
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdir -p ./pr
+          echo "${{ github.event.pull_request.number }}" > ./pr/pr_number
+      # upload artifact
+      - name: Upload PR number artifact
+        id: upload_pr_artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr_number
+          path: pr/

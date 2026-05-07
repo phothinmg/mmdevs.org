@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Myanmar Developers(mmdevs)",
+  "description": "Schema for mmdevs sub-domain register",
+  "type": "object",
+  "properties": {
+    "sub_domain": {
+      "description": "Name of sub-domain that you want to register",
+      "type": "string"
+    },
+    "cname_value": {
+      "description": "Value for CNAME of your register sub-domain",
+      "type": "string",
+      "pattern": "((^|\\.)([Gg][Ii][Tt][Hh][Uu][Bb]\\.[Ii][Oo]|[Vv][Ee][Rr][Cc][Ee][Ll]-[Dd][Nn][Ss]-[0-9]+\\.[Cc][Oo][Mm])(?:\\/.*)?$)|(^[Cc][Nn][Aa][Mm][Ee]\\.[Vv][Ee][Rr][Cc][Ee][Ll]-[Dd][Nn][Ss]\\.[Cc][Oo][Mm](?:\\/.*)?$)"
+    },
+    "request_type": {
+      "type": "string",
+      "enum": ["register", "update", "remove"],
+      "description": "Type of your request"
+    },
+    "cfp": {
+      "description": "Cloudflare proxied",
+      "type": "boolean",
+      "default": "false"
+    }
+  },
+  "required": ["sub_domain", "cname_value", "request_type"]
+}

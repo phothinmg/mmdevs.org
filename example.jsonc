@@ -1,0 +1,107 @@
+/*
+Welcome to mmdevs.org
+
+This is an example/guide file with a ".jsonc" extension (JSON with Comments)
+for registering, updating, or removing subdomains of mmdevs.org.
+
+Please read the guide carefully before registering, updating, or removing a subdomain.
+*/
+
+{
+  /*
+  EXAMPLE ->
+  */
+  /*[Recommended] Schema of the data */
+  "$schema": "./schema/mmdevs.json",
+  /*[Required]    The "<sub_domain>" you want to register, which will become "<sub_domain>.mmdevs.org". */
+  "sub_domain": "example",
+  /* 
+  [Required]      The "<cname_value>" for your "<sub_domain>". Currently, we support "GitHub Pages" for user accounts
+                  and sites hosted on "Vercel".
+
+  GitHub Pages:   Use "<user_name>.github.io" for all repositories, such as "https://github.com/{user_name}/{repo}".
+                
+                  Publishing from a branch ->
+                  Add a file named 'CNAME' with the content "<sub_domain>.mmdevs.org" at source branch/source directory.
+                  For Configuring a publishing source for your GitHub Pages site can see at https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site.
+
+                  Publishing using a workflow ->
+                  A CNAME file will not be processed when publishing a site via a workflow.
+                  Add "<sub_domain>.mmdevs.org" as a custom domain at "https://github.com/{user_name}/{repo}/settings/pages".
+  
+  Vercel:         Use "cname.vercel-dns.com" or the newer "<code>.vercel-dns-017.com" target shown by "Vercel".
+                  
+  */
+  "cname_value": "example.github.io",
+  /*
+  [Required]      1. If you add a new registration file to the "subdomains" directory -> 
+                     "register" [adding new file]
+
+                  2. If you want to update "<cname_value>" of your registered "<sub_domain>" -> 
+                     "update" [editing existing file]
+
+                  3. If you want to remove "<sub_domain>" of your registered -> 
+                     "remove" [editing existing file]
+  */
+  "request_type": "register",
+  /*
+  [Optional]      Cloudflare Proxy Status - (default: false)
+                  "mmdevs.org" uses Cloudflare for DNS management. Currently, this is forced to false during
+                  the validation process on PRs. For Vercel, it is always forced to false.
+  */
+  "cfp": false
+}
+
+/*
+--------------------------------------------------------------------------------------------------------------------
+HOW TO ->
+
+Register:   When you add a new registration file to the "subdomains" directory:
+            1. [Required]    Your are GitHub user with location from "Myanmar".
+            2. [Make sure]   Use ".json" file extension.
+            3. [Make sure]   Your requested sub-domain and your JSON file name are same.
+                             That make easy to other user to find sub-domain name is available or not.
+                             Example : {"sub_domain": "foo"} -> foo.json
+            4. [Recommended] Run "npx mmdevs <sub_domain>" in terminal (replace "<sub_domain>" with name you want to register), 
+                             for check sub-domain is available and create <sub_domain>.json in "subdomains" directory.
+                             After that edit <cname_value> , example : {"cname_value": "doe.github.io"}.
+            5. [Recommended] Push to your branch by run "npm run commit" with commit message "<sub_domain>.mmdevs.org".
+                             Create PR on mmdevs.org.
+
+Update:     If you want to update "<cname_value>" of your registered "<sub_domain>" :
+            1. [Required]    Your are GitHub user with location from "Myanmar".
+            2. [Make sure]   You have right to update this "<sub_domain>", 
+                             that mean owner of that "<sub_domain>" and "<site_repo>" .
+            3. [Make sure]   Update "<cname_value>" in "<sub_domain>.json" with new "<cname_value>".
+                             Set "<request_type>" to "update" in "<sub_domain>.json".
+            4. [Recommended] Push to your branch by run "npm run commit" with commit message "<sub_domain>.mmdevs.org".
+                             Create PR on mmdevs.org.
+
+Remove:     If you want to remove "<sub_domain>" of your registered :
+            1. [Required]    Your are GitHub user with location from "Myanmar".
+            2. [Make sure]   You have right to remove this "<sub_domain>", 
+                             that mean owner of that "<sub_domain>" and "<site_repo>" .
+            3. [Make sure]   Set "<request_type>" to "remove" in "<sub_domain>.json".
+            4. [Recommended] Push to your branch by run "npm run commit" with commit message "<sub_domain>.mmdevs.org".
+                             Create PR on mmdevs.org.
+
+-----------------------------------------------------------------------------------------------------------------------
+
+VALIDATION ->
+
+By GitHub Actions:
+
+1. PR template format.
+2. GitHub user location.
+3. Check entry JSON file or edited JSON file (file change in PR).
+
+By Maintainers:
+
+1. Review source repo and page.
+2. Approve its valid content on review.
+3. Merge to base branch and set DNS setting for requested "<sub_domain>".
+
+-------------------------------------------------------------------------------------------------------------------------
+BECAUSE OF THE RISK OF ABUSE, WE ARE NOT ACCEPTING REQUESTS FOR PAGES WITHOUT REASONABLE CONTENT!
+-------------------------------------------------------------------------------------------------------------------------
+*/

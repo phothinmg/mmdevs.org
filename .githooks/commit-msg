@@ -1,0 +1,15 @@
+#!/bin/bash
+
+subject=$(grep -vE '^\s*#' "$1" | sed '/^\s*$/d' | head -n1)
+
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+# Enforce subdomain-style commit subjects on all branches except main.
+if [[ "$branch" != "main" ]]; then
+	if [[ ! "$subject" =~ ^(Register|Update|Remove)[[:space:]]+:[[:space:]]+[a-z0-9-]+\.mmdevs\.org$ ]]; then
+		echo "Invalid commit message subject on branch '$branch'."
+		echo "Expected format: <Register|Update|Remove> : <sub-domain>.mmdevs.org"
+		echo "Example: Register : blog.mmdevs.org"
+		exit 1
+	fi
+fi
