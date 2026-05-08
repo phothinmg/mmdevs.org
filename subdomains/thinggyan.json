@@ -1,0 +1,6 @@
+{
+  "$schema": "../schema/mmdevs.json",
+  "sub_domain": "thingyan",
+  "cname_value": "phothinmg.github.io",
+  "request_type": "register"
+}
