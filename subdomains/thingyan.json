@@ -1,6 +1,0 @@
-{
-  "$schema": "../schema/mmdevs.json",
-  "sub_domain": "thingyan",
-  "cname_value": "thingyan.github.io",
-  "request_type": "register"
-}
