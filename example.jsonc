@@ -49,7 +49,7 @@ Please read the guide carefully before registering, updating, or removing a subd
                   "mmdevs.org" uses Cloudflare for DNS management. Currently, this is forced to false during
                   the validation process on PRs. For Vercel, it is always forced to false.
   */
-  "cfp": false
+  "cfp": false,
 }
 
 /*
@@ -62,7 +62,7 @@ Register:   When you add a new registration file to the "subdomains" directory:
             3. [Make sure]   Your requested sub-domain and your JSON file name are same.
                              That make easy to other user to find sub-domain name is available or not.
                              Example : {"sub_domain": "foo"} -> foo.json
-            4. [Recommended] Run "npx mmdevs <sub_domain>" in terminal (replace "<sub_domain>" with name you want to register), 
+            4. [Recommended] Run "npx mmsd <sub_domain>" in terminal (replace "<sub_domain>" with name you want to register), 
                              for check sub-domain is available and create <sub_domain>.json in "subdomains" directory.
                              After that edit <cname_value> , example : {"cname_value": "doe.github.io"}.
             5. [Recommended] Push to your branch by run "npm run commit" with commit message "<sub_domain>.mmdevs.org".
