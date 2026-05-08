@@ -60,53 +60,7 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          KV_API_TOKEN: ${{ secrets.MMDEVS_CF_KV_API_TOKEN }}
-          KV_NS_ID: ${{ secrets.MMDEVS_KV_NS_ID }}
           CF_ACCOUNT_ID: ${{ secrets.PTM_CF_ACC_ID }}
         run: |
-          node body.mjs
+          node pulls.mjs
         working-directory: mmdevs
-
-      - name: Check PR User Location
-        id: check_pr_user_location
-        env:
-          GITHUB_TOKEN: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          KV_API_TOKEN: ${{ secrets.MMDEVS_CF_KV_API_TOKEN }}
-          KV_NS_ID: ${{ secrets.MMDEVS_KV_NS_ID }}
-          CF_ACCOUNT_ID: ${{ secrets.PTM_CF_ACC_ID }}
-        run: |
-          node user.mjs
-        working-directory: mmdevs
-
-      - name: Check Entries
-        id: check_entries
-        env:
-          GITHUB_TOKEN: ${{ secrets.SUSEE_BOT_PAT_TOKEN }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          KV_API_TOKEN: ${{ secrets.MMDEVS_CF_KV_API_TOKEN }}
-          KV_NS_ID: ${{ secrets.MMDEVS_KV_NS_ID }}
-          CF_ACCOUNT_ID: ${{ secrets.PTM_CF_ACC_ID }}
-        run: |
-          node entry.mjs
-        working-directory: mmdevs
-
-      # save artifact
-      - name: Save PR number artifact
-        id: save_pr_artifact
-        if: github.event_name == 'pull_request'
-        run: |
-          mkdir -p ./pr
-          echo "${{ github.event.pull_request.number }}" > ./pr/pr_number
-      # upload artifact
-      - name: Upload PR number artifact
-        id: upload_pr_artifact
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
-        with:
-          name: pr_number
-          path: pr/
