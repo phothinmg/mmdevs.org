@@ -49,7 +49,7 @@ Please read the guide carefully before registering, updating, or removing a subd
                   "mmdevs.org" uses Cloudflare for DNS management. Currently, this is forced to false during
                   the validation process on PRs. For Vercel, it is always forced to false.
   */
-  "cfp": false,
+  "cfp": false
 }
 
 /*
