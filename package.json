@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "For Myanmar dev community.",
   "scripts": {
-    "hooks:install": "node scripts/hooksInstall.js"
+    "hooks:install": "node scripts/hooksInstall.js",
+    "commit": "node scripts/commit.js"
   },
   "repository": {
     "type": "git",

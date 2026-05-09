@@ -11,8 +11,9 @@ This repository is where you can request, update, or remove a `*.mmdevs.org` sub
 
 ## At a glance
 
-1. [Fork](https://github.com/phothinmg/mmdevs.org/fork) this repository.
-2. Add or edit one JSON file in `subdomains/`.[See detail about using mmsd cli to add a new JSON file](https://github.com/phothinmg/mmdevs.org/wiki/MMSD-CLI)
+1. Follow the steps in [Quit Start](#quick-start).
+2. Add or edit one JSON file in `subdomains/`.
+   [See detail about using mmsd cli to add a new JSON file](https://github.com/phothinmg/mmdevs.org/wiki/MMSD-CLI)
 3. Open a pull request.
 4. Maintainers validate and apply DNS on approval.
 
@@ -170,4 +171,20 @@ The commit helper will:
 
 ## License
 
-See repository license information.
+This project uses a split-license model:
+
+1. Code and automation
+   Licensed under Apache License 2.0 (Apache-2.0). See [LICENSE](LICENSE).
+2. Subdomain registry data and request records in `subdomains/`
+   Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0). See [LICENSE-DATA](LICENSE-DATA).
+
+In short: source code is Apache-2.0, and subdomain JSON request data is CC BY 4.0.
+
+### SPDX
+
+Use these SPDX identifiers for tooling and scans:
+
+1. Default repository code: `Apache-2.0`
+2. Data files in `subdomains/`: `CC-BY-4.0`
+
+<!-- [Fork](https://github.com/phothinmg/mmdevs.org/fork) this repository -->
