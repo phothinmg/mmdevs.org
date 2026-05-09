@@ -1,10 +1,9 @@
 <!-- markdownlint-disable MD033 -->
 <!-- markdownlint-disable MD041 -->
-<p align="center">
+<div align="center">
 <img src="https://cdn.suseejs.org/logo/mmdevs.webp" width="160" height="160" alt="mmdevs" style="border-radius:50%" />
-</p>
-<h2 align="center">MMDEVS.ORG</h2>
-
+<h2>MMDEVS.ORG</h2>
+</div>
 ---
 
 [mmsd-cli](./mmsd.md)
